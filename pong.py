@@ -25,7 +25,7 @@ TAMANYO_PELOTA = 6
 #me creo una clase Paleta y heredará de clase .Rect que ya me ofrece parámetros base
 #necesitaré constructor __init__ para recoger datos de las 2 paletas
 class Paleta (pygame.Rect):
-    #defino estas 2 constantes para que me quede muy claro cuando llame a dirección
+    #defino estas 2 constantes para que me quede muy claro cuando se pase desde el bucle
     ARRIBA = True
     ABAJO = False
     #me genero mi constructor de Paleta propio
@@ -37,6 +37,7 @@ class Paleta (pygame.Rect):
     #a parte de velocidad necesito saber dirección 
     def muevete(self, direccion):
         if direccion == self.ARRIBA:
+            #la y es la posición de un rectángulo en Pygame
             self.y = self.y - self.velocidad
             if self.y < 0:
                 self.y = 0
@@ -76,7 +77,7 @@ class Pong:
                         return
                 if evento.type == pygame.QUIT:
                     return
-            #......
+            #petición para saber qué teclas estoy pulsando
             estado_teclas = pygame.key.get_pressed()
             if estado_teclas[pygame.K_a]:
                 self.jugador1.muevete(Paleta.ARRIBA)
