@@ -48,15 +48,17 @@ class Pong:
 
     #necesito bucle principal que recorrerá todo el rato comprobando mil cosas del juego
     def bucle_principal (self):
-        print("Estoy en el bucle principal") 
+        print("Estoy en el bucle principal")
+        # bucle: pregunta por eventos + dibuja, dibuja + da la vuelta CONSTANTEMENTE! 
         while True:
-            #eventos de librería que dentro del bucle pregunto todo el rato para 
+            #eventos de librería que dentro del bucle recorro (for) para comprobar si los hay y que no se cuelgue el juego
+            #get me devolverá una lista de tipo eventos 
             for evento in pygame. event.get():
+                #pregunto si este tipo de evento (keydown)es que he pulsado tecla salir (keyscape), salgo!
                 if evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.KEY_SCAPE:
+                        return
                         
-
-
             #cada vez que haga algo con el juego tendré que pintar la paleta en la posicion correcta
             pygame.draw.rect (self.pantalla, (255, 255,255),self.jugador1)
             pygame.draw.rect (self.pantalla, (255, 255,255),self.jugador2)
