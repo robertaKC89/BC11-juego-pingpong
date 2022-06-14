@@ -61,10 +61,12 @@ class Pong:
                         return
                 if evento.type == pygame.QUIT:
                     return
+            #pinto la red 
+            pygame.draw.line(self.pantalla, (255, 255, 255), (self._ANCHO/2, 0), (self._ANCHO/2, self._ALTO))
             #cada vez que haga algo con el juego tendré que pintar la paleta en la posicion correcta
             pygame.draw.rect (self.pantalla, (255, 255,255),self.jugador1)
             pygame.draw.rect (self.pantalla, (255, 255,255),self.jugador2)
-            #flip me refresca y me muestra cada cambio que voy haciendo
+            #flip me refresca y me muestra cada cambio que voy haciendo en la pantalla
             pygame.display.flip()
             
 # llamo al juego desde la linea de comandos. Recuerdo que __main__ es el módulo principal que cargo 
