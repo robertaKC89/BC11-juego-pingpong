@@ -1,18 +1,14 @@
 #antes he instalado gestor de paquetes de pygame = pip 3
-from typing_extensions import Self
 import pygame
 """
   - algo de herencia:
-
   - color, ancho, alto
   - hay cosas fijas como el color y el tamaño
-
   - método moverse: solo hacia arriba y hacia abajo
   - método de chocar: límite para no salirse de la pantalla
-
   - método para interactuar con la pelota???
 """
-#defino todo esto como variable global. Así podré acceder tanto desde classes Pong como Paleta
+#defino todo esto como variable global. Así podré acceder tanto desde classes Pong como desde Paleta
 ALTO_PALETA = 40
 ANCHO_PALETA = 5
 
@@ -63,22 +59,28 @@ class Pong:
             (ALTO-ALTO_PALETA)/2)
 
     #necesito bucle principal que recorrerá todo el rato comprobando mil cosas del juego
+    #bucle: pregunta por eventos + dibuja, dibuja + da la vuelta CONSTANTEMENTE o SALIDA!
     def bucle_principal (self):
-        print("Estoy en el bucle principal")
-        # bucle: pregunta por eventos + dibuja, dibuja + da la vuelta CONSTANTEMENTE o SALIDA! 
-        while True:
+        salir = False
+        while not salir:
             #eventos de librería que dentro de bucle recorro (for) para comprobar si hay y que no se cuelgue el juego
-            #get me devolverá una lista de tipo eventos 
-            for evento in pygame. event.get():
-                #pregunto si este tipo de evento (keydown)es que he pulsado tecla salir (keyscape), salgo!
+            #get me devolverá una lista de tipo eventos
+            for evento in pygame.event.get():
+                #pregunto si este evento (keydown)es que he pulsado tecla salir (keyscape), salgo!
                 if evento.type == pygame.KEYDOWN:
-                    if evento.key == pygame.KEY_SCAPE:
-                        print ('adiós, te has escapado')
-                        return
+                    if evento.key == pygame.K_ESCAPE:
+                        print("Adiós, te has escapado")
+                        salir = True
+                    if evento.key == pygame.K_r:
+                        print("Iniciamos nueva partida")
+                        self.marcador.inicializar()
                 if evento.type == pygame.QUIT:
-                    return
+                    salir = True 
+
             #petición para saber qué teclas estoy pulsando
+            #funcion get_pressed de pygame que devuelve lista con booleans segun estado de cada tecla
             estado_teclas = pygame.key.get_pressed()
+            # elemplo: si estado_teclas está en índice.K_a se mueve
             if estado_teclas[pygame.K_a]:
                 self.jugador1.muevete(Paleta.ARRIBA)
             if estado_teclas[pygame.K_z]:
@@ -87,13 +89,18 @@ class Pong:
                 self.jugador2.muevete(Paleta.ARRIBA)
             if estado_teclas[pygame.K_DOWN]:
                 self.jugador2.muevete(Paleta.ABAJO)
-            #pinto la red del campo 
-            pygame.draw.line(self.pantalla, (255, 255, 255), (self._ANCHO/2, 0), (self._ANCHO/2, self._ALTO))
-            #cada vez que haga algo con el juego tendré que pintar la paleta en la posicion correcta
-            pygame.draw.rect (self.pantalla, (255, 255,255),self.jugador1)
-            pygame.draw.rect (self.pantalla, (255, 255,255),self.jugador2)
-            #flip me refresca y me muestra cada cambio que voy haciendo en la pantalla
+
+            #pinto la red del campo
+            #con fill me borra y rellena de los espacios no usados  
+            self.pantalla.fill(C_NEGRO)
+            pygame.draw.line(self.pantalla, C_BLANCO, (ANCHO/2, 0), (ANCHO/2, ALTO))
+            pygame.draw.rect(self.pantalla, C_BLANCO, self.jugador1)
+            pygame.draw.rect(self.pantalla, C_BLANCO, self.jugador2)
+            pygame.draw.rect(self.pantalla, C_BLANCO, self.pelota)
+
+            #refresco de pantalla
             pygame.display.flip()
+            self.clock.tick(FPS)
             
 # llamo al juego desde la linea de comandos. Recuerdo que __main__ es el módulo principal que cargo 
 if __name__ == "__main__":
