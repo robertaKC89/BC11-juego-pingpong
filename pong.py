@@ -11,12 +11,14 @@ import pygame
 #defino todo esto como variable global. Así podré acceder tanto desde classes Pong como desde Paleta
 ALTO_PALETA = 40
 ANCHO_PALETA = 5
+VELOCIDAD_PALA = 5
 
 ANCHO = 640
 ALTO = 480
 MARGEN_LATERAL = 40
 
 TAMANYO_PELOTA = 6
+VEL_MAX_PELOTA = 5
 
 #me creo una clase Paleta y heredará de clase .Rect que ya me ofrece parámetros base
 #necesitaré constructor __init__ para recoger datos de las 2 paletas
