@@ -123,7 +123,7 @@ class Pong:
 
             #refresco de pantalla
             pygame.display.flip()
-            # en referencia a la instancia que tengo en class Pong, hazme tick 60veces/s
+            # en referencia a la instancia que tengo en class Pong, haz tick 60veces/s
             self.clock.tick(60)
             
 # llamo al juego desde la linea de comandos. Recuerdo que __main__ es el módulo principal que cargo 
