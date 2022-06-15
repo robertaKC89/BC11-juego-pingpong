@@ -39,6 +39,7 @@ class Paleta (pygame.Rect):
                 self.y = 0
         else:
             self.y = self.y + self.velocidad
+            #xk la posición y marca la parte superior
             if self.y > ALTO - ALTO_PALETA:
                 self.y = ALTO - ALTO_PALETA
 
@@ -48,7 +49,7 @@ class Pong:
         print("Construyendo un objeto pong")
         pygame.init()
         # módulo display para control de pantalla y usamos .set_mode (ver uso en documentación)
-        self.pantalla = pygame.display.set_mode((self._ANCHO, self._ALTO))
+        self.pantalla = pygame.display.set_mode((ANCHO,ALTO))
         # variables creadas como propiedad de la class Pong
         self.jugador1 = Paleta(
             MARGEN_LATERAL,               # coordenada x (left)
