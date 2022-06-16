@@ -31,7 +31,7 @@ PUNTOS_PARTIDA = 3
 #me creo una clase Paleta y heredará de class .Rect que ya me ofrece parámetros base
 #necesitaré constructor __init__ para recoger datos de las 2 paletas
 class Paleta(pygame.Rect):
-    #defino estas 2 constantes para que me quede claro cuando se pase desde el bucle
+    #defino estas 2 constantes para que me quede claro el 'muevete' cuando se pase desde el bucle
     ARRIBA = True
     ABAJO = False
     #me genero mi constructor de Paleta propio
@@ -44,7 +44,7 @@ class Paleta(pygame.Rect):
     #a parte de velocidad necesito saber dirección
     def muevete(self, direccion):
         if direccion == self.ARRIBA:
-            #la y es la posición de un rectángulo en Pygame
+            #la y es una propiedad/posición de un rectángulo en Pygame
             self.y = self.y - self.velocidad
             if self.y < 0:
                 self.y = 0
@@ -77,9 +77,13 @@ class Pelota(pygame.Rect):
     def muevete(self):
         self.x = self.x + self.velocidad_x
         self.y = self.y + self.velocidad_y
+        #si la posición y<0 (xk al rebotar saldría de pantalla) tienen que pasar 2 cosas
         if self.y < 0:
+            #no te sales de pantalla ya que la y es 0 (lo mismo he echo con paleta)
             self.y = 0
+            #cambio el signo para invertir velocidad
             self.velocidad_y = -self.velocidad_y
+        #para el borde inferior
         if self.y > ALTO-TAMANYO_PELOTA:
             self.y = ALTO-TAMANYO_PELOTA
             self.velocidad_y = -self.velocidad_y
@@ -166,11 +170,12 @@ class Pong:
 
             if not self.marcador.comprobar_ganador():
                 self.pelota.muevete()
-                self.colision_paletas()
+                self.colision_paletas()     #hago la llamada pero def está más abajo
                 self.comprobar_punto()
 
             #pinto la red del campo
             #con fill me borra y rellena de los espacios no usados
+            #luego lo vuelvo a pintar todo (ya que estoy en bucle)
             self.pantalla.fill(C_NEGRO)
             pygame.draw.line(self.pantalla, C_BLANCO, (ANCHO/2, 0), (ANCHO/2, ALTO))
             pygame.draw.rect(self.pantalla, C_BLANCO, self.jugador1)
@@ -183,12 +188,10 @@ class Pong:
             self.clock.tick(FPS)
 
     def colision_paletas(self):
-        """
-        Comprueba si la pelota ha colisionado con una de las paletas
-        y le cambia la dirección. (pygame.Rect.colliderect(Rect))
-        """
+        #Collidirect comprueba si la pelota ha colisionado con una de las paleta y le cambia la dirección
         if pygame.Rect.colliderect(self.pelota, self.jugador1) or pygame.Rect.colliderect(self.pelota, self.jugador2):
             self.pelota.velocidad_x = -self.pelota.velocidad_x
+            #estamos generando un efecto simple al choque de pelota con paletas 
             self.pelota.velocidad_y = randint(-VEL_MAX_PELOTA, VEL_MAX_PELOTA)
 
     def comprobar_punto(self):
