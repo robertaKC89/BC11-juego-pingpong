@@ -1,8 +1,15 @@
 from random import randint
-
+#antes he instalado gestor de paquetes de pygame = pip 3
 import pygame
-
-
+"""
+  - algo de herencia:
+  - color, ancho, alto
+  - hay cosas fijas como el color y el tamaño
+  - método moverse: solo hacia arriba y hacia abajo
+  - método de chocar: límite para no salirse de la pantalla
+  - método para interactuar con la pelota???
+"""
+#defino todo esto como variable global. Así podré acceder tanto desde class Pong como desde Paleta
 ALTO_PALETA = 40
 ANCHO_PALETA = 5
 VELOCIDAD_PALA = 5
@@ -21,27 +28,35 @@ FPS = 60
 
 PUNTOS_PARTIDA = 3
 
+#me creo una clase Paleta y heredará de class .Rect que ya me ofrece parámetros base
+#necesitaré constructor __init__ para recoger datos de las 2 paletas
 class Paleta(pygame.Rect):
-
+    #defino estas 2 constantes para que me quede claro cuando se pase desde el bucle
     ARRIBA = True
     ABAJO = False
-
+    #me genero mi constructor de Paleta propio
     def __init__(self, x, y):
+        #llamo al constructor de la class superior con __init__ que hereda Paleta de .Rect
         super(Paleta, self).__init__(x, y, ANCHO_PALETA, ALTO_PALETA)
+        #necesito introducir velocidad para saber espacio que va a moverse
         self.velocidad = VELOCIDAD_PALA
-
+        
+    #a parte de velocidad necesito saber dirección
     def muevete(self, direccion):
         if direccion == self.ARRIBA:
+            #la y es la posición de un rectángulo en Pygame
             self.y = self.y - self.velocidad
             if self.y < 0:
                 self.y = 0
         else:
             self.y = self.y + self.velocidad
+            #si la posicion es mayor que el alto de pantalla - alto de paleta se lo asigno otra vez
             if self.y > ALTO - ALTO_PALETA:
                 self.y = ALTO - ALTO_PALETA
 
-
+#pongo .Rect para ver la similitud con la class Paleta
 class Pelota(pygame.Rect):
+    #1ºcreo mi propio constructor
     def __init__(self):
         super(Pelota, self).__init__(
             (ANCHO-TAMANYO_PELOTA)/2, (ALTO-TAMANYO_PELOTA)/2,
@@ -97,12 +112,14 @@ class Marcador:
         self.partida_finalizada = False
 
 class Pong:
-
+    #necesito constructor para iniciar pygame
     def __init__(self):
         pygame.init()
+        # módulo display para control de pantalla y usamos .set_mode (ver uso en documentación)
         self.pantalla = pygame.display.set_mode((ANCHO, ALTO))
+        #módulo clock instancio para cuando tenga que hacer cosas...
         self.clock = pygame.time.Clock()
-
+        #variables creadas como propiedad de la class Pong
         self.jugador1 = Paleta(
             MARGEN_LATERAL,               # coordenada x (left)
             (ALTO-ALTO_PALETA)/2)         # coordenada y (top)
@@ -111,13 +128,19 @@ class Pong:
             ANCHO-MARGEN_LATERAL-ANCHO_PALETA,
             (ALTO-ALTO_PALETA)/2)
 
+        #necesito pelota que instancio y para pintarla la debo pasar al bucle principal
         self.pelota = Pelota()
         self.marcador = Marcador()
-
+    
+    #necesito bucle principal que recorrerá todo el rato comprobando mil cosas del juego
+    #bucle: pregunta por eventos + dibuja, dibuja + da la vuelta CONSTANTEMENTE o SALIDA!
     def bucle_principal(self):
         salir = False
         while not salir:
+            #eventos de librería que dentro de bucle recorro (for) para comprobar si hay y que no se cuelgue el juego
+            #get me devolverá una lista de tipo eventos
             for evento in pygame.event.get():
+                #pregunto si este evento (keydown)es que he pulsado tecla salir (keyscape), salgo!
                 if evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_ESCAPE:
                         print("Adiós, te has escapado")
@@ -128,7 +151,10 @@ class Pong:
                 if evento.type == pygame.QUIT:
                     salir = True
 
+            #petición para saber qué teclas estoy pulsando
+            #funcion get_pressed de pygame que devuelve lista con booleans segun estado de cada tecla
             estado_teclas = pygame.key.get_pressed()
+            # elemplo: compruebo si estado_teclas está en índice.K_a se mueve
             if estado_teclas[pygame.K_a]:
                 self.jugador1.muevete(Paleta.ARRIBA)
             if estado_teclas[pygame.K_z]:
@@ -143,14 +169,17 @@ class Pong:
                 self.colision_paletas()
                 self.comprobar_punto()
 
+            #pinto la red del campo
+            #con fill me borra y rellena de los espacios no usados
             self.pantalla.fill(C_NEGRO)
             pygame.draw.line(self.pantalla, C_BLANCO, (ANCHO/2, 0), (ANCHO/2, ALTO))
             pygame.draw.rect(self.pantalla, C_BLANCO, self.jugador1)
             pygame.draw.rect(self.pantalla, C_BLANCO, self.jugador2)
             pygame.draw.rect(self.pantalla, C_BLANCO, self.pelota)
 
-            # refresco de pantalla
+            # refresco de pantalla con flip
             pygame.display.flip()
+            #en referencia a la instancia que tengo en class Pong, haz tick 60veces/s
             self.clock.tick(FPS)
 
     def colision_paletas(self):
@@ -180,7 +209,7 @@ class Pong:
         self.pelota.velocidad_y = randint(-VEL_MAX_PELOTA, VEL_MAX_PELOTA)
 
 
-
+# llamo al juego desde la linea de comandos. Recuerdo que __main__ es el módulo principal que cargo
 if __name__ == "__main__":
     juego = Pong()
     juego.bucle_principal()
