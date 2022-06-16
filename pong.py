@@ -9,7 +9,7 @@ import pygame
   - método de chocar: límite para no salirse de la pantalla
   - método para interactuar con la pelota???
 """
-#defino todo esto como variable global. Así podré acceder tanto desde class Pong como desde Paleta
+#defino todo esto como parámetros/variables de config.para poder usarlos donde haga falta
 ALTO_PALETA = 40
 ANCHO_PALETA = 5
 VELOCIDAD_PALA = 5
@@ -184,14 +184,14 @@ class Pong:
 
             # refresco de pantalla con flip
             pygame.display.flip()
-            #en referencia a la instancia que tengo en class Pong, haz tick 60veces/s
+            #en referencia a la variable de config. que tengo arriba fuera-> haz tick 60veces/s
             self.clock.tick(FPS)
 
     def colision_paletas(self):
         #Collidirect comprueba si la pelota ha colisionado con una de las paleta y le cambia la dirección
         if pygame.Rect.colliderect(self.pelota, self.jugador1) or pygame.Rect.colliderect(self.pelota, self.jugador2):
             self.pelota.velocidad_x = -self.pelota.velocidad_x
-            #estamos generando un efecto simple al choque de pelota con paletas 
+            #estamos generando un efecto simple/aleatorio al choque de pelota con paletas 
             self.pelota.velocidad_y = randint(-VEL_MAX_PELOTA, VEL_MAX_PELOTA)
 
     def comprobar_punto(self):
