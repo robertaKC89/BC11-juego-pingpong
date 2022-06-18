@@ -46,7 +46,7 @@ class Paleta(pygame.Rect):
         if direccion == self.ARRIBA:
             #la y es una propiedad/posición de un rectángulo en Pygame
             self.y = self.y - self.velocidad
-            if self.y < 0:
+            if self.y < 0: 
                 self.y = 0
         else:
             self.y = self.y + self.velocidad
@@ -68,6 +68,7 @@ class Pelota(pygame.Rect):
         #     self.velocidad_x = randint(-VEL_MAX_PELOTA, VEL_MAX_PELOTA)
         #     velocidad_x_valor_valido = self.velocidad_x != 0
 
+        #1º de doy valor a la velocidad_x con la variable
         self.velocidad_x = 0
         while self.velocidad_x == 0:
             self.velocidad_x = randint(-VEL_MAX_PELOTA, VEL_MAX_PELOTA)
@@ -88,18 +89,13 @@ class Pelota(pygame.Rect):
             self.y = ALTO-TAMANYO_PELOTA
             self.velocidad_y = -self.velocidad_y
 
-
+#no hereda de nada, por ello no llamo con paréntesis 
 class Marcador:
-    """
-    - ¿qué?    guardar números, pintar
-    - ¿dónde?  ------
-    - ¿cómo?   ------
-    - ¿cuándo? cuando la pelota sale del campo
-    """
-
+    #como cualquier class tengo un constructor y lo primero que hace es llamar a inicializar partida si se gana
     def __init__(self):
         self.inicializar()
 
+    #condicion de ganador para finalizar partida
     def comprobar_ganador(self):
         if self.partida_finalizada:
             return True
@@ -109,6 +105,7 @@ class Marcador:
         elif self.valor[1] == PUNTOS_PARTIDA:
             print("Ha ganado el jugador 2")
             self.partida_finalizada = True
+        #siempre devuelvo partida finalizada y si no ha ganado nadie devolverá su valor = False
         return self.partida_finalizada
 
     def inicializar(self):
@@ -134,11 +131,17 @@ class Pong:
 
         #necesito pelota que instancio y para pintarla la debo pasar al bucle principal
         self.pelota = Pelota()
+        #inicio marcador y lo instancio
         self.marcador = Marcador()
     
     #necesito bucle principal que recorrerá todo el rato comprobando mil cosas del juego
     #bucle: pregunta por eventos + dibuja, dibuja + da la vuelta CONSTANTEMENTE o SALIDA!
     def bucle_principal(self):
+        #defino render 1 vez para pintar marcador
+        texto = pygame.font.Font.render(self.tipografia, 'como mola este juego', False, C_BLANCO (50,0,0))
+        texto_x = ANCHO/2 - texto.get_width()/2
+        texto_y = ALTO/2 -texto.get_height()/2
+
         salir = False
         while not salir:
             #eventos de librería que dentro de bucle recorro (for) para comprobar si hay y que no se cuelgue el juego
@@ -149,6 +152,7 @@ class Pong:
                     if evento.key == pygame.K_ESCAPE:
                         print("Adiós, te has escapado")
                         salir = True
+                    #si pulso otra tecla reinicio partida
                     if evento.key == pygame.K_r:
                         print("Iniciamos nueva partida")
                         self.marcador.inicializar()
@@ -168,10 +172,11 @@ class Pong:
             if estado_teclas[pygame.K_DOWN]:
                 self.jugador2.muevete(Paleta.ABAJO)
 
+            #si hay ganador ya no me hace falta comprobar nada de esto, paro la partida
             if not self.marcador.comprobar_ganador():
                 self.pelota.muevete()
                 self.colision_paletas()     #hago la llamada pero def está más abajo
-                self.comprobar_punto()
+                self.comprobar_punto()      #hago la llamada pero def está más abajo
 
             #pinto la red del campo
             #con fill me borra y rellena de los espacios no usados
@@ -188,17 +193,19 @@ class Pong:
             self.clock.tick(FPS)
 
     def colision_paletas(self):
-        #Collidirect comprueba si la pelota ha colisionado con una de las paleta y le cambia la dirección
+        #Collidirect comprueba si la pelota ha colisionado con una de las paletas y le cambia la dirección
         if pygame.Rect.colliderect(self.pelota, self.jugador1) or pygame.Rect.colliderect(self.pelota, self.jugador2):
             self.pelota.velocidad_x = -self.pelota.velocidad_x
             #estamos generando un efecto simple/aleatorio al choque de pelota con paletas 
             self.pelota.velocidad_y = randint(-VEL_MAX_PELOTA, VEL_MAX_PELOTA)
 
+    #marcador pasa a ser una priopiedad del juego
     def comprobar_punto(self):
-        if self.pelota.x < 0:
-            self.marcador.valor[1] = self.marcador.valor[1] + 1
+        if self.pelota.x < 0:       #compruebo si pelota se ha salido por algun lado
+            self.marcador.valor[1] = self.marcador.valor[1] + 1  #actualizo marcador   
             print(f"El nuevo marcador es {self.marcador.valor}")
             self.pelota.velocidad_x = randint(-VEL_MAX_PELOTA, -1)
+            #si hay ganador inicio nuevo punto (sino no hará nada)
             self.iniciar_punto()
         elif self.pelota.x > ANCHO:
             self.marcador.valor[0] = self.marcador.valor[0] + 1
@@ -206,6 +213,7 @@ class Pong:
             self.pelota.velocidad_x = randint(1, VEL_MAX_PELOTA)
             self.iniciar_punto()
 
+    #método que coje la pelota y la pone en centro de pantalla para poder inicializar partida 
     def iniciar_punto(self):
         self.pelota.x = (ANCHO - TAMANYO_PELOTA)/2
         self.pelota.y = (ALTO - TAMANYO_PELOTA)/2
