@@ -95,8 +95,10 @@ class Pelota(pygame.Rect):
 class Marcador:
     #como cualquier class tengo un constructor y lo primero que hace es llamar a inicializar partida si se gana
     def __init__(self):
-        #llamo a inicializar tipografia en el constructor xk solo la cargaré una vez
-        self.tipografia = pygame.font.SysFont ('roboto', 100)
+        #llamo a inicializar letra_marcador en el constructor xk solo la cargaré una vez
+        self.letra_marcador = pygame.font.SysFont ('roboto', 100)
+        #creo para llamar a otro tipo de fuente y tamaño para el sms
+        self.letra_mensaje = pygame.font.SysFont('roboto', 40)
         self.inicializar()
 
     #condicion de ganador para finalizar partida
@@ -104,10 +106,11 @@ class Marcador:
         if self.partida_finalizada:
             return True
         if self.valor[0] == PUNTOS_PARTIDA:
-            print("Ha ganado el jugador 1")
+            #establezco sms a la variable y le pongo boolean
+            self.mensaje_ganador = "Ha ganado el jugador 1"
             self.partida_finalizada = True
         elif self.valor[1] == PUNTOS_PARTIDA:
-            print("Ha ganado el jugador 2")
+            self.mensaje_ganador = "Ha ganado el jugador 2"
             self.partida_finalizada = True
         #siempre devuelvo partida finalizada y si no ha ganado nadie devolverá su valor = False
         return self.partida_finalizada
@@ -119,7 +122,7 @@ class Marcador:
     #genero un metodo para que marcador se pinte solo
     def pintar (self, pantalla):
         #necesito el texto de los 2 marcadores con tipografia que me he guardado (xo esto aun no lo pinta)
-        texto = pygame.font.Font.render(self.tipografia, str(self.valor[0]), True, C_BLANCO)
+        texto = pygame.font.Font.render(self.letra_marcador, str(self.valor[0]), True, C_BLANCO)
         pos_x =  (ANCHO/2 - MARGEN_LATERAL - ANCHO_PALETA)/2 - texto.get_width()/2 + MARGEN_LATERAL + ANCHO_PALETA
         pos_y =  MARGEN_LATERAL
         #ahora si que lo pinto 
@@ -130,6 +133,12 @@ class Marcador:
         pos_y =  MARGEN_LATERAL
         #ahora si que lo pinto 
         pygame.Surface.blit(pantalla, texto, (pos_x, pos_y))
+
+        if self.partida_finalizada:
+            texto = pygame.font.Font.render(self.letra_mensaje, self.mensaje_ganador, False, C_BLANCO)
+            pos_x =  ANCHO/2 - texto.get_width()/2
+            pos_y =  ALTO/2 - texto.get_height()/2 - MARGEN_LATERAL
+            pygame.Surface.blit(pantalla, texto, (pos_x, pos_y))
         
 
 class Pong:
