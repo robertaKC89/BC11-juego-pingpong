@@ -1,3 +1,4 @@
+from cgitb import text
 from random import randint
 #antes he instalado gestor de paquetes de pygame = pip 3
 import pygame
@@ -113,13 +114,19 @@ class Marcador:
         self.partida_finalizada = False
 
 class Pong:
-    #necesito constructor para iniciar pygame
+    #necesito constructor para iniciar entorno pygame
     def __init__(self):
         pygame.init()
         # módulo display para control de pantalla y usamos .set_mode (ver uso en documentación)
         self.pantalla = pygame.display.set_mode((ANCHO, ALTO))
         #módulo clock instancio para cuando tenga que hacer cosas...
         self.clock = pygame.time.Clock()
+
+        #me preparo par pintar texto
+        pygame.font.init()
+        #para cargar una tipografia el sistema me la guardo en el propio juego por si la quiero reutilizar
+        self. tipografia = pygame.font.SysFont ('roboto',100) 
+
         #variables creadas como propiedad de la class Pong
         self.jugador1 = Paleta(
             MARGEN_LATERAL,               # coordenada x (left)
@@ -137,8 +144,9 @@ class Pong:
     #necesito bucle principal que recorrerá todo el rato comprobando mil cosas del juego
     #bucle: pregunta por eventos + dibuja, dibuja + da la vuelta CONSTANTEMENTE o SALIDA!
     def bucle_principal(self):
-        #defino render 1 vez para pintar marcador
-        texto = pygame.font.Font.render(self.tipografia, 'como mola este juego', False, C_BLANCO (50,0,0))
+        #genero objeto texto 1 vez para pintar marcador
+        texto = pygame.font.Font.render(self.tipografia, 'como mola PONG', True, C_BLANCO)
+        #necesito saber coordenadas del texto y divido entre 2 antes de pintar
         texto_x = ANCHO/2 - texto.get_width()/2
         texto_y = ALTO/2 -texto.get_height()/2
 
@@ -186,6 +194,9 @@ class Pong:
             pygame.draw.rect(self.pantalla, C_BLANCO, self.jugador1)
             pygame.draw.rect(self.pantalla, C_BLANCO, self.jugador2)
             pygame.draw.rect(self.pantalla, C_BLANCO, self.pelota)
+
+            #para pintar un objeto de superficie encima de otro
+            self.pantalla.blit(texto, (texto_x, texto_y))
 
             # refresco de pantalla con flip
             pygame.display.flip()
