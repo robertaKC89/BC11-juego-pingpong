@@ -149,7 +149,7 @@ class Pong:
             for evento in pygame.event.get():
                 #pregunto si este evento (keydown)es que he pulsado tecla salir (keyscape), salgo!
                 if evento.type == pygame.KEYDOWN:
-                    if evento.key == pygame.K_ESCAPE:
+                    if evento.key == pygame.K_ESCAPE: 
                         print("Adiós, te has escapado")
                         salir = True
                     #si pulso otra tecla reinicio partida
