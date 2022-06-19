@@ -1,5 +1,6 @@
 from cgitb import text
 from random import randint
+from typing import TextIO
 #antes he instalado gestor de paquetes de pygame = pip 3
 import pygame
 """
@@ -94,6 +95,8 @@ class Pelota(pygame.Rect):
 class Marcador:
     #como cualquier class tengo un constructor y lo primero que hace es llamar a inicializar partida si se gana
     def __init__(self):
+        #llamo a inicializar tipografia en el constructor xk solo la cargaré una vez
+        self.tipografia = pygame.font.SysFont ('roboto', 100)
         self.inicializar()
 
     #condicion de ganador para finalizar partida
@@ -112,6 +115,22 @@ class Marcador:
     def inicializar(self):
         self.valor = [0, 0]
         self.partida_finalizada = False
+    
+    #genero un metodo para que marcador se pinte solo
+    def pintar (self, pantalla):
+        #necesito el texto de los 2 marcadores con tipografia que me he guardado (xo esto aun no lo pinta)
+        texto = pygame.font.Font.render(self.tipografia, str(self.valor[0]), True, C_BLANCO)
+        pos_x =  (ANCHO/2 - MARGEN_LATERAL - ANCHO_PALETA)/2 - texto.get_width()/2 + MARGEN_LATERAL + ANCHO_PALETA
+        pos_y =  MARGEN_LATERAL
+        #ahora si que lo pinto 
+        pygame.Surface.blit(pantalla, texto, (pos_x, pos_y))
+
+        texto = pygame.font.Font.render(self.letra_marcador, str(self.valor[1]), False, C_BLANCO)
+        pos_x =  (ANCHO/2 - MARGEN_LATERAL - ANCHO_PALETA)/2 - texto.get_width()/2 + ANCHO/2
+        pos_y =  MARGEN_LATERAL
+        #ahora si que lo pinto 
+        pygame.Surface.blit(pantalla, texto, (pos_x, pos_y))
+        
 
 class Pong:
     #necesito constructor para iniciar entorno pygame
@@ -125,7 +144,7 @@ class Pong:
         #me preparo par pintar texto
         pygame.font.init()
         #para cargar una tipografia el sistema me la guardo en el propio juego por si la quiero reutilizar
-        self. tipografia = pygame.font.SysFont ('roboto',100) 
+        self. tipografia = pygame.font.SysFont ('roboto',50) 
 
         #variables creadas como propiedad de la class Pong
         self.jugador1 = Paleta(
@@ -144,12 +163,6 @@ class Pong:
     #necesito bucle principal que recorrerá todo el rato comprobando mil cosas del juego
     #bucle: pregunta por eventos + dibuja, dibuja + da la vuelta CONSTANTEMENTE o SALIDA!
     def bucle_principal(self):
-        #genero objeto texto 1 vez para pintar marcador
-        texto = pygame.font.Font.render(self.tipografia, 'como mola PONG', True, C_BLANCO)
-        #necesito saber coordenadas del texto y divido entre 2 antes de pintar
-        texto_x = ANCHO/2 - texto.get_width()/2
-        texto_y = ALTO/2 -texto.get_height()/2
-
         salir = False
         while not salir:
             #eventos de librería que dentro de bucle recorro (for) para comprobar si hay y que no se cuelgue el juego
@@ -194,9 +207,8 @@ class Pong:
             pygame.draw.rect(self.pantalla, C_BLANCO, self.jugador1)
             pygame.draw.rect(self.pantalla, C_BLANCO, self.jugador2)
             pygame.draw.rect(self.pantalla, C_BLANCO, self.pelota)
-
-            #para pintar un objeto de superficie encima de otro
-            self.pantalla.blit(texto, (texto_x, texto_y))
+            #llamará a marcador y le pasará la info de pantalla
+            self.marcador.pintar(self.pantalla)
 
             # refresco de pantalla con flip
             pygame.display.flip()
