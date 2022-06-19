@@ -98,7 +98,7 @@ class Marcador:
         #llamo a inicializar letra_marcador en el constructor xk solo la cargaré una vez
         self.letra_marcador = pygame.font.SysFont ('roboto', 100)
         #creo para llamar a otro tipo de fuente y tamaño para el sms
-        self.letra_mensaje = pygame.font.SysFont('roboto', 40)
+        self.letra_mensaje = pygame.font.SysFont('arial', 40)
         self.inicializar()
 
     #condicion de ganador para finalizar partida
